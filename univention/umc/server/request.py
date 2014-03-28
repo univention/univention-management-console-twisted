@@ -335,6 +335,8 @@ class UMCRequest(Request):
 			self.setResponseCode(415)
 			raise ValueError('File uploads are currently only supported on /upload.')
 
+		ucr.load()
+
 		fields = FieldStorage(
 			self.content,
 			headers={'content-type': self.getHeader('Content-Type')},
