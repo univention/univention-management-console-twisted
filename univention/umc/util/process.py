@@ -89,11 +89,24 @@ class UMCModuleProcess(object):
 		if headers:
 			headers = Headers(dict(self.__headers(headers)))
 
-		connection = self.create()
-		connection.addCallback(lambda result: response.callback(result))
-		connection.addErrback(lambda failure: response.errback(failure.value))  # FIXME: is failure.value correct?
+		def success(result):
+			if not self.proxy:
+				MODULE.error('Waiting for socket creation timed out... %r' % (result,))
+				raise CouldNotConnect('The ModuleProcess connection failed due to a internal timeout')
+			return response.callback(result)
 
-		response.addCallback(lambda _: self.proxy.request(method, uri, headers, body))
+		def failed(failure):
+			MODULE.error('Creating ModuleProcess failed...')
+			return response.errback(failure.value)
+
+		def request(_):
+			MODULE.info('Passing request %r to module process' % (uri,))
+			return self.proxy.request(method, uri, headers, body)
+
+		connection = self.create()
+		connection.addCallback(success)
+		connection.addErrback(failed)
+		response.addCallback(request)
 		return response
 
 	def __headers(self, headers):
@@ -106,7 +119,7 @@ class UMCModuleProcess(object):
 		if self._connected is not None:
 			return self._connected
 
-		MODULE.info('Starting new module process: %s' % (self.module))
+		MODULE.info('Starting new module process: %s' % (self.module,))
 		self.socket = self.get_socket_path()
 
 		args = [
@@ -129,7 +142,7 @@ class UMCModuleProcess(object):
 		else:
 			self._connection_attempts += 1
 			if not self.running or self._connection_attempts > self._max_connection_attempts:
-				raise CouldNotConnect('Socket %s does not exists' % (self.socket))
+				raise CouldNotConnect('Socket %s does not exists' % (self.socket,))
 
 	def get_socket_path(self):
 		return join(MODULE_SOCKET_PATH, '%u-%lu.socket' % (getpid(), long(time() * 1000)))
