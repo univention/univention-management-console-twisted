@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 7.0.50~),
  python2.6-dev,
  python-support,
  python-polib,
+ univention-management-console-dev,
  univention-config-dev
 Standards-Version: 3.7.2
 
@@ -20,6 +21,7 @@ Depends: ${misc:Depends},
  python-univention-lib (>= 1.0.80),
  python-univention-directory-manager (>=9.0.75-1),
  univention-join,
+ univention-base-files,
  python-univention,
  python-pyopenssl,
  python-pam,

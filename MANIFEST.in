@@ -1,0 +1,5 @@
+include setup.py
+include MANIFEST.in
+include scripts/*
+recursive-include univention *.py
+recursive-include debian control rules changelog

@@ -1,9 +1,10 @@
-#!/usr/bin/make -f
+#!/usr/bin/python2.6
+# -*- coding: utf-8 -*-
 #
-# Univention UMC
-#  rules file for the debian package
+# Univention Configuration Registry
+#  build UMC module
 #
-# Copyright 2002-2014 Univention GmbH
+# Copyright 2013-2014 Univention GmbH
 #
 # http://www.univention.de/
 #
@@ -30,21 +31,14 @@
 # /usr/share/common-licenses/AGPL-3; if not, see
 # <http://www.gnu.org/licenses/>.
 
-override_dh_auto_build:
-	./dev/dh-umc-module-build --core
-	dh_auto_build -- --executable=/usr/bin/python2.6
+import univention.dh_umc as dh_umc
+import sys
 
-override_dh_auto_install:
-	./dev/dh-umc-module-install --core
-	univention-install-config-registry
-	dh_auto_install -- --install-scripts=$(destdir)/usr/sbin
+if 1 == len(sys.argv) or '-h' in sys.argv or '--help' in sys.argv:
+	print
+	print 'usage: dh-umc-po2json <poFile1> ...'
+	print
+	sys.exit(0)
 
-override_dh_install:
-	dh_install -X.svn
-
-override_dh_auto_test:
-	#ucslint
-	dh_auto_test
-
-%:
-	dh $@
+for ifile in sys.argv[1:]:
+	dh_umc.create_json_file(ifile)
