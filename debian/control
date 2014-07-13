@@ -1,0 +1,37 @@
+Source: univention-umc
+Section: univention
+Priority: optional
+Maintainer: Univention GmbH <packages@univention.de>
+Build-Depends: debhelper (>= 7.0.50~),
+ ucslint-univention,
+ python2.6-dev,
+ python-support,
+ python-polib,
+ univention-config-dev
+Standards-Version: 3.7.2
+
+Package: univention-umc
+Architecture: all
+Depends: ${misc:Depends},
+ univention-directory-manager-tools (>> 7.0.147),
+ shell-univention-lib (>= 1.0.10-1),
+ python-daemon,
+ python-univention-config-registry,
+ python-univention-lib (>= 1.0.80),
+ python-univention-directory-manager (>=9.0.75-1),
+ univention-join,
+ python-univention,
+ python-pyopenssl,
+ python-pam,
+ python-polib,
+ python-notifier (>= 0.9.5-1)
+Description: UCS Management Console - Web based computer administration tool
+ UCS Management Console is a web based program to manage computers.
+ It has an extensible architecture, using modules to implement
+ its features. This package contains the web-frontend, which
+ can be installed to provide access to one or several daemons.
+ .
+ This package is part of Univention Corporate Server (UCS),
+ an integrated, directory driven solution for managing
+ corporate environments. For more information about UCS,
+ refer to: http://www.univention.de/
