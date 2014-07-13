@@ -35,6 +35,8 @@
 # configure firewall
 ucr set security/packetfilter/package/univention-umc/tcp/8091/all="ACCEPT" \
 		security/packetfilter/package/univention-umc/tcp/8091/all/en="UMC"
+ucr set security/packetfilter/package/univention-umc/tcp/8080/all="ACCEPT" \
+		security/packetfilter/package/univention-umc/tcp/8080/all/en="UMC"
 [ -x "/etc/init.d/univention-firewall" ] && invoke-rc.d univention-firewall restart
 
 exit 0
