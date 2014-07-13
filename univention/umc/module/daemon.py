@@ -113,7 +113,6 @@ class ModuleDaemon(Daemon):
 		finally:
 			umask(old_umask)
 
-		#reactor.run()  # FIXME: computerroom module wouldn't work
 		notifier.loop()
 
 	def main(self):
@@ -134,7 +133,6 @@ class ModuleDaemon(Daemon):
 		implementation = self.options.notifier.lower()
 		types = dict(
 			qt=notifier.QT,
-			#generic=notifier.GENERIC # we need to call .step() in the twisted main loop when using generic
 			generic=notifier.TWISTED
 		)
 
@@ -147,5 +145,5 @@ class ModuleDaemon(Daemon):
 		# disable notifier logging
 		nflog.instance.handlers = []
 		# to activate notifier logging
-		# nflog.set_level(nflog.DEBUG)
-		# nflog.open()
+		nflog.set_level(nflog.DEBUG)
+		nflog.open()
