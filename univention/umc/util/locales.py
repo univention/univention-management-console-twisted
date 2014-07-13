@@ -59,6 +59,8 @@ class Translation(object):
 			except (I18N_Error, AttributeError, TypeError):
 				CORE.warn('Setting locale to specified locale failed (%s)' % (language,))
 				success = False
+			else:
+				break
 		return success
 
 	def get_language(self):
