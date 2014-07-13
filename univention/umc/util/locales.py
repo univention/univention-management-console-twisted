@@ -69,7 +69,7 @@ def set_locale(locale):
 	try:
 		locale = str(Locale(locale))
 		setlocale(LC_MESSAGES, locale)
-		CORE.info("Setting specified locale (%s)" % (locale,))
+		CORE.info("Successful load specified locale (%s)" % (locale,))
 	except LocaleError:
 		CORE.warn("Specified locale is not available (%s)" % (locale,))
 		CORE.warn("Falling back to C")

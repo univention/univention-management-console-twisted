@@ -144,7 +144,7 @@ class ServerDaemon(Daemon):
 		add(
 			'-d', '--debug', default=self.default_debug,
 			action='store', type=int, dest='debug',
-			help='if given than debugging is activated and set to the specified level [default: %(default)s]'
+			help='if given then debugging is activated and set to the specified level [default: %(default)s]'
 		)
 		add(
 			'-L', '--log-file', default='management-console-server',

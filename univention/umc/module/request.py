@@ -48,10 +48,6 @@ from univention.umc.authentication.acl import ACLs  # TODO: don't use internals
 
 class ModuleRequest(Request):
 
-	def __init__(self, *a, **kw):
-		Request.__init__(self, *a, **kw)
-		self.__initialized = False
-
 	def get_umcp_request(self, umcptype, command):
 		options = simplejson.load(self.content)
 		flavor = self.getHeader('X-UMC-Flavor')
@@ -71,7 +67,7 @@ class ModuleRequest(Request):
 		method = self.getHeader('X-UMC-Method')
 		_ = self.getSession(Translation)._  # TODO: this runs in the module process so it can be a global
 		try:
-			self.initialize()
+			self.site.initialize(self)
 			return Request.render(self, resource)
 		except UMC_OptionSanitizeError as exc:
 			self.setResponseCode(409)  # Conflict  # HTTP FIXME
@@ -93,32 +89,27 @@ class ModuleRequest(Request):
 
 		if isinstance(message, unicode):
 			message = message.encode('UTF-8')
+		MODULE.process(message)
+
 		message = json.dumps(message)
 		result = json.dumps(result)
 
-		MODULE.process(message)
 		self.setHeader('X-UMC-Message', message)
 		self.setHeader('Content-Length', b'%d' % len(result))
 		self.write(result)
 		self.finish()
 
 	def initialize(self):
-		self.set_language()
-
-		if self.__initialized:
-			return
-
 		handler = self.site.handler
 		handler.username = self.getUser()
 		handler.password = self.getPassword()
 		handler.user_dn = self.getHeader('X-User-Dn')
 		handler.acls = ACLs(acls=json.loads(self.getHeader('X-UMC-Acls')))  # TODO: load ACL's from filename
 
-		self.__initialized = True
-		handler.init()
-
 	def set_language(self):
 		locale = self.getHeader('Accept-Language')
+		locale = locale.replace('-', '_')
+		MODULE.process('Setting language to %r' % (locale,))
 		if not change_locale(locale):
 			locale = 'C'
 		self.site.handler.set_language(locale)

@@ -63,7 +63,8 @@ class ModuleRoot(Resource):
 
 	def get_command(self, path):
 		try:
-			umcpcmd, command = self.RE_COMMAND.match(path).groups()
+			match = self.RE_COMMAND.match(path)
+			umcpcmd, command = match.groups()
 			return umcpcmd.upper(), command
-		except ValueError:  # pragma: no-cover
+		except (ValueError, AttributeError):  # pragma: no-cover
 			return ('COMMAND', '/')

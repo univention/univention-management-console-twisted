@@ -50,6 +50,7 @@ class ModuleServer(ServerSite):
 		self.requestFactory = ModuleRequest
 		# TODO: add timer which kills process when not receiving request anymore
 
+		self.__initialized = False
 		self.handler = None
 		self.__module = module
 		self.__load_module()
@@ -58,6 +59,17 @@ class ModuleServer(ServerSite):
 		self.handler.signal_connect('success', self.__umcp_respond)
 		self.handler.signal_connect('failure', self.__umcp_respond)
 
+	def initialize(self, request):
+		request.set_language()
+
+		if self.__initialized:
+			return
+
+		request.initialize()
+
+		self.__initialized = True
+		self.handler.init()
+
 	def reload_server(self):
 		try:
 			call(['/usr/sbin/umc-server', 'reload'])
@@ -65,6 +77,7 @@ class ModuleServer(ServerSite):
 			pass
 
 	def __umcp_respond(self, response):
+		MODULE.process('Responding to %r; status=%r' % (response.id, response.status))
 		request = self.requests.pop(response.id)
 		request.setResponseCode(response.status)
 		request.setHeader('X-UMC-Message', json.dumps(response.message or ''))
@@ -78,6 +91,7 @@ class ModuleServer(ServerSite):
 	def __load_module(self):
 		modname = self.__module
 		self.__module = None
+		MODULE.info('Importing module %r' % (modname,))
 		try:
 			self.__import(modname)
 		except ImportError as exc:
@@ -88,7 +102,7 @@ class ModuleServer(ServerSite):
 		self.handler = self.__module.Instance()
 
 	def __import(self, modname):
-		file_ = 'univention.management.console.modules.%s' % (modname)
+		file_ = 'univention.management.console.modules.%s' % (modname,)
 		self.__module = __import__(file_, [], [], modname)
 
 	def __destroy_handler(self):
