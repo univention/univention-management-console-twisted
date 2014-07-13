@@ -36,6 +36,12 @@ __all__ = [
 	'PasswordExpired', 'PasswordChangeFailed'
 ]
 
+from univention.umc.interfaces import (
+	implements, Translation, User, ACLs, ModuleProcess,
+	NotAuthenticated, AuthenticationFailed,
+	PasswordExpired, PasswordChangeFailed,
+	CouldNotConnect
+)
 
 def main():
 	import sys
