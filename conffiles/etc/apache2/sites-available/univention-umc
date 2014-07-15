@@ -1,8 +1,18 @@
 @%@UCRWARNING=# @%@
 
-<VirtualHost *:8080>
 ProxyPreserveHost on
 
+<VirtualHost *:80>
+@!@
+port = 8090
+interface = configRegistry.get('umc/http/interface', '127.0.0.1')
+
+print 'ProxyPass /umcp/ http://%s:%s/ retry=0' % (interface, port)
+print 'ProxyPassReverse /umcp/ http://%s:%s/' % (interface, port)
+print 'ProxyTimeout %s' % int(configRegistry.get('umc/http/session/timeout', '300'))
+@!@
+</VirtualHost>
+<VirtualHost *:8080>
 @!@
 port = 8091
 interface = configRegistry.get('umc/http/interface', '127.0.0.1')
@@ -11,6 +21,7 @@ print 'ProxyPass /umcp/ http://%s:%s/ retry=0' % (interface, port)
 print 'ProxyPassReverse /umcp/ http://%s:%s/' % (interface, port)
 print 'ProxyTimeout %s' % int(configRegistry.get('umc/http/session/timeout', '300'))
 @!@
+</VirtualHost>
 
 RedirectMatch ^/umc(/$|$) /univention-management-console/
 RedirectMatch ^/univention-management-console$ /univention-management-console/
@@ -42,4 +53,3 @@ SetEnv proxy-nokeepalive 1
 
 <Directory /var/www/univention-management-console>
 </Directory>
-</VirtualHost>
