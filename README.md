@@ -1,5 +1,5 @@
-Univention Management Console Server Rewrite with Twisted
-=========================================================
+Univention Management Console Server rewrite using the Twisted-Web Framework
+============================================================================
 
 This project is a prototype implementation of a rewrite of the Univention Management Console Framework.
 It merges the UMC-Server (UMCP daemon uding python notifier) and UMC-Webserver (HTTP Webserver using python cherrypy) component into one component.
